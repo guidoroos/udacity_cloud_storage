@@ -48,7 +48,7 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doMockSignUp(String firstName, String lastName, String userName, String password){
+	private void doMockSignUp(String firstName, String lastName, String username, String password){
 		// Create a dummy account for logging in later.
 
 		// Visit the sign-up page.
@@ -67,10 +67,10 @@ class CloudStorageApplicationTests {
 		inputLastName.click();
 		inputLastName.sendKeys(lastName);
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
-		WebElement inputUsername = driver.findElement(By.id("inputUsername"));
-		inputUsername.click();
-		inputUsername.sendKeys(userName);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputusername")));
+		WebElement inputusername = driver.findElement(By.id("inputusername"));
+		inputusername.click();
+		inputusername.sendKeys(username);
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement inputPassword = driver.findElement(By.id("inputPassword"));
@@ -95,16 +95,16 @@ class CloudStorageApplicationTests {
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doLogIn(String userName, String password)
+	private void doLogIn(String username, String password)
 	{
 		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
-		WebElement loginUserName = driver.findElement(By.id("inputUsername"));
-		loginUserName.click();
-		loginUserName.sendKeys(userName);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputusername")));
+		WebElement loginusername = driver.findElement(By.id("inputusername"));
+		loginusername.click();
+		loginusername.sendKeys(username);
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement loginPassword = driver.findElement(By.id("inputPassword"));
