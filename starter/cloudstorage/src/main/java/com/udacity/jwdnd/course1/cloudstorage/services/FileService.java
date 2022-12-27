@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
-import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class FileService {
         String contentType = file.getContentType();
         byte[] bytes = file.getInputStream().readAllBytes();
 
-        File newFile = new File (null,filename,contentType,fileSize,bytes,user);
+        File newFile = new File (null,filename,contentType,fileSize,bytes,user.getUserId());
         int inserts = fileMapper.insert(newFile);
 
         if (inserts == 0) {
@@ -40,7 +39,6 @@ public class FileService {
 
     public List<File> getAllFiles (String username) {
         User user = userService.getUserFromName(username);
-        List<File> files = fileMapper.getAllFiles(user.getUserId());
         return fileMapper.getAllFiles(user.getUserId());
     }
 

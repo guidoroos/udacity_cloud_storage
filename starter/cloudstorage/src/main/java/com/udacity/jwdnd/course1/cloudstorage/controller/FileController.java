@@ -1,9 +1,10 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,23 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 
 @Controller
 public class FileController {
 
-    private FileService fileService;
+    String error = null;
+    private final FileService fileService;
 
-    String uploadError = null;
-    String deleteError = null;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
@@ -35,6 +34,8 @@ public class FileController {
 
     @GetMapping("/file/delete")
     public String handleFileDelete(
+            NoteForm noteForm,
+            CredentialForm credentialForm,
             Authentication authentication,
             @RequestParam("id")
             int fileId,
@@ -45,16 +46,16 @@ public class FileController {
             int numberDeleted = fileService.deleteFile(fileId);
 
             if (numberDeleted == 0) {
-                deleteError = "something went wrong deleting file";
+                error = "something went wrong deleting file";
             }
         } else {
-            deleteError = "no file found to delete";
+            error = "no file found to delete";
         }
 
-        if (deleteError == null) {
-            model.addAttribute("deleteSuccess", true);
+        if (error == null) {
+            model.addAttribute("successMessage", "Your file was removed successfully!");
         } else {
-            model.addAttribute("deleteError", uploadError);
+            model.addAttribute("error", error);
         }
 
         List<File> files = fileService.getAllFiles(username);
@@ -64,6 +65,8 @@ public class FileController {
 
     @GetMapping("/file/view")
     public ResponseEntity<Resource> viewFile(
+            NoteForm noteForm,
+            CredentialForm credentialForm,
             @RequestParam("filename")
             String filename
     ) {
@@ -83,6 +86,8 @@ public class FileController {
 
     @PostMapping("/file")
     public String handleFileUpload(
+            NoteForm noteForm,
+            CredentialForm credentialForm,
             @RequestParam("fileUpload")
             MultipartFile file,
             Authentication authentication,
@@ -93,21 +98,21 @@ public class FileController {
         try {
             if (!file.isEmpty()) {
                 if (!fileService.checkFilenameAvailable(file.getOriginalFilename())) {
-                    uploadError = "Cannot upload, there is already a file with same filename";
+                    error = "Cannot upload, there is already a file with same filename";
                 } else {
                     fileService.storeFile(file, username);
                 }
             } else {
-                uploadError = "Cannot upload, no file selected";
+                error = "Cannot upload, no file selected";
             }
         } catch (IOException e) {
-            uploadError = "Something went wrong uploading your file";
+            error = "Something went wrong uploading your file";
         }
 
-        if (uploadError == null) {
-            model.addAttribute("uploadSuccess", true);
+        if (error == null) {
+            model.addAttribute("successMessage", "Your file was uploaded successfully!");
         } else {
-            model.addAttribute("uploadError", uploadError);
+            model.addAttribute("error", error);
         }
 
 
@@ -117,4 +122,6 @@ public class FileController {
         return "home";
     }
 }
+
+
 

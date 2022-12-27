@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.mapper;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
     @Insert("INSERT INTO FILES(filename, contentType, fileSize, fileData, userId) " +
-            "VALUES(#{filename}, #{contentType}, #{fileSize}, #{fileData}, #{user.userId})")
+            "VALUES(#{filename}, #{contentType}, #{fileSize}, #{fileData}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     int insert(File file);
 

@@ -19,7 +19,7 @@ public class NoteService {
         this.userService = userService;
     }
 
-    public List<File> getAllNotes(String username) {
+    public List<Note> getAllNotes(String username) {
         User user = userService.getUserFromName(username);
         return noteMapper.getAllNotes(user.getUserId());
     }
@@ -27,7 +27,7 @@ public class NoteService {
     public int storeNote(NoteForm noteForm, String username) {
         User user = userService.getUserFromName(username);
 
-        Note note = new Note(null, noteForm.getNoteTitle(), noteForm.getNoteDescription(), user);
+        Note note = new Note(noteForm.getNoteId(), noteForm.getNoteTitle(), noteForm.getNoteDescription(), user.getUserId());
 
         if (noteForm.getNoteId() == null) {
             return noteMapper.insert(note);
@@ -36,8 +36,14 @@ public class NoteService {
             note.setNoteId(id);
             return noteMapper.update(note);
         }
+
+
     }
 
+
+    public int deleteNote(int noteId) {
+        return noteMapper.delete (noteId);
+    }
 
 
 }

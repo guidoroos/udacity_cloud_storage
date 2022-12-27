@@ -3,7 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -52,11 +51,23 @@ class CloudStorageApplicationTests {
 		// Create a dummy account for logging in later.
 
 		// Visit the sign-up page.
-		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		driver.get("http://localhost:" + this.port + "/signup");
-		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
+
 		
 		// Fill out credentials
+		signupMockUser(driver, firstName, lastName, username, password);
+
+		/* Check that the sign up was successful. 
+		// You may have to modify the element "success-msg" and the sign-up 
+		// success message below depening on the rest of your code.
+		*/
+		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+	}
+
+	public static void signupMockUser(WebDriver driver, String firstName, String lastName, String username, String password) {
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
+
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputFirstName")));
 		WebElement inputFirstName = driver.findElement(By.id("inputFirstName"));
 		inputFirstName.click();
@@ -67,10 +78,10 @@ class CloudStorageApplicationTests {
 		inputLastName.click();
 		inputLastName.sendKeys(lastName);
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputusername")));
-		WebElement inputusername = driver.findElement(By.id("inputusername"));
-		inputusername.click();
-		inputusername.sendKeys(username);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
+		WebElement inputUsername = driver.findElement(By.id("inputUsername"));
+		inputUsername.click();
+		inputUsername.sendKeys(username);
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputPassword")));
 		WebElement inputPassword = driver.findElement(By.id("inputPassword"));
@@ -81,28 +92,26 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("buttonSignUp")));
 		WebElement buttonSignUp = driver.findElement(By.id("buttonSignUp"));
 		buttonSignUp.click();
-
-		/* Check that the sign up was successful. 
-		// You may have to modify the element "success-msg" and the sign-up 
-		// success message below depening on the rest of your code.
-		*/
-		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
-	
-	
+
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
 	 **/
-	private void doLogIn(String username, String password)
+	private void doLogin(String username, String password)
 	{
 		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
+
+		loginMockUser(driver, username, password);
+	}
+
+	public static void loginMockUser(WebDriver driver, String username, String password) {
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputusername")));
-		WebElement loginusername = driver.findElement(By.id("inputusername"));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
+		WebElement loginusername = driver.findElement(By.id("inputUsername"));
 		loginusername.click();
 		loginusername.sendKeys(username);
 
@@ -116,7 +125,6 @@ class CloudStorageApplicationTests {
 		loginButton.click();
 
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
-
 	}
 
 	/**
@@ -155,7 +163,7 @@ class CloudStorageApplicationTests {
 	public void testBadUrl() {
 		// Create a test account
 		doMockSignUp("URL","Test","UT","123");
-		doLogIn("UT", "123");
+		doLogin("UT", "123");
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
@@ -179,7 +187,7 @@ class CloudStorageApplicationTests {
 	public void testLargeUpload() {
 		// Create a test account
 		doMockSignUp("Large File","Test","LFT","123");
-		doLogIn("LFT", "123");
+		doLogin("LFT", "123");
 
 		// Try to upload an arbitrary large file
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
@@ -192,7 +200,7 @@ class CloudStorageApplicationTests {
 		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
 		uploadButton.click();
 		try {
-			webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
+			webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("success-msg")));
 		} catch (org.openqa.selenium.TimeoutException e) {
 			System.out.println("Large File upload failed");
 		}
